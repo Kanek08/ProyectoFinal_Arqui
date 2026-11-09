@@ -1,0 +1,33 @@
+{
+  "name": "reservalab",
+  "private": true,
+  "type": "module",
+  "version": "1.0.0",
+  "description": "ReservaLab: API REST para reservar laboratorios y salones de la Facultad de Ingeniería",
+  "packageManager": "pnpm@10.34.9",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "turbo run test",
+    "test:coverage": "turbo run test:coverage",
+    "db:migrate": "pnpm --filter @reservalab/api db:migrate",
+    "db:seed": "pnpm --filter @reservalab/api db:seed",
+    "db:reset": "pnpm --filter @reservalab/api db:reset"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.0",
+    "eslint": "^9.39.0",
+    "eslint-config-prettier": "^10.1.0",
+    "globals": "^16.0.0",
+    "prettier": "^3.6.0",
+    "turbo": "^2.5.0",
+    "typescript": "5.9.3",
+    "typescript-eslint": "^8.46.0"
+  }
+}

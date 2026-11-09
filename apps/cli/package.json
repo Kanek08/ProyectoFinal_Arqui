@@ -1,0 +1,23 @@
+{
+  "name": "@reservalab/cli",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Herramienta de línea de comandos para el administrador de ReservaLab",
+  "bin": {
+    "reservalab": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc --noEmit && tsup src/index.ts --format esm --target node22 --clean",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "@reservalab/shared": "workspace:*",
+    "commander": "^14.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.0",
+    "tsup": "^8.5.0",
+    "typescript": "5.9.3"
+  }
+}

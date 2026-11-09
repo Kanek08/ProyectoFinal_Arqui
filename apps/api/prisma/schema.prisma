@@ -1,0 +1,99 @@
+// Modelo de datos de ReservaLab.
+// La restricción de exclusión contra traslapes y el CHECK de rango están en la
+// migración 20261109000100_reservation_constraints porque Prisma no los modela.
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  DOCENTE
+  ESTUDIANTE
+}
+
+enum ReservationStatus {
+  CONFIRMED
+  CANCELLED
+}
+
+model User {
+  id           String         @id @default(uuid()) @db.Uuid
+  name         String         @db.VarChar(120)
+  email        String         @unique @db.VarChar(254)
+  passwordHash String         @map("password_hash")
+  role         Role           @default(ESTUDIANTE)
+  createdAt    DateTime       @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt    DateTime       @updatedAt @map("updated_at") @db.Timestamptz(6)
+  refreshTokens RefreshToken[]
+  reservations Reservation[]
+
+  @@map("users")
+}
+
+model RefreshToken {
+  id        String    @id @default(uuid()) @db.Uuid
+  userId    String    @map("user_id") @db.Uuid
+  tokenHash String    @unique @map("token_hash") @db.VarChar(64)
+  expiresAt DateTime  @map("expires_at") @db.Timestamptz(6)
+  revokedAt DateTime? @map("revoked_at") @db.Timestamptz(6)
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("refresh_tokens")
+}
+
+model Space {
+  id           String        @id @default(uuid()) @db.Uuid
+  name         String        @db.VarChar(100)
+  building     String        @db.VarChar(100)
+  capacity     Int
+  openTime     String        @map("open_time") @db.VarChar(5)
+  closeTime    String        @map("close_time") @db.VarChar(5)
+  active       Boolean       @default(true)
+  createdAt    DateTime      @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt    DateTime      @updatedAt @map("updated_at") @db.Timestamptz(6)
+  reservations Reservation[]
+
+  @@unique([building, name])
+  @@index([building])
+  @@map("spaces")
+}
+
+model Reservation {
+  id        String            @id @default(uuid()) @db.Uuid
+  spaceId   String            @map("space_id") @db.Uuid
+  userId    String            @map("user_id") @db.Uuid
+  startAt   DateTime          @map("start_at") @db.Timestamptz(6)
+  endAt     DateTime          @map("end_at") @db.Timestamptz(6)
+  purpose   String            @db.VarChar(200)
+  status    ReservationStatus @default(CONFIRMED)
+  createdAt DateTime          @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime          @updatedAt @map("updated_at") @db.Timestamptz(6)
+  space     Space             @relation(fields: [spaceId], references: [id])
+  user      User              @relation(fields: [userId], references: [id])
+
+  @@index([spaceId, startAt])
+  @@index([userId])
+  @@map("reservations")
+}
+
+model ApiKey {
+  id          String    @id @default(uuid()) @db.Uuid
+  name        String    @db.VarChar(100)
+  prefix      String    @db.VarChar(16)
+  keyHash     String    @unique @map("key_hash") @db.VarChar(64)
+  permissions String[]
+  lastUsedAt  DateTime? @map("last_used_at") @db.Timestamptz(6)
+  revokedAt   DateTime? @map("revoked_at") @db.Timestamptz(6)
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  @@map("api_keys")
+}

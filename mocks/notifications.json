@@ -1,0 +1,96 @@
+{
+  "uuid": "6f1b5c2e-3a4d-4c1e-9b2a-1d2e3f4a5b6c",
+  "lastMigration": 33,
+  "name": "ReservaLab Notificaciones (simulado)",
+  "endpointPrefix": "",
+  "latency": 0,
+  "port": 3001,
+  "hostname": "",
+  "folders": [],
+  "routes": [
+    {
+      "uuid": "a1b2c3d4-0001-4000-8000-000000000001",
+      "type": "http",
+      "documentation": "Recibe eventos de reservas confirmadas o canceladas y los acepta para envío asíncrono.",
+      "method": "post",
+      "endpoint": "notifications",
+      "responses": [
+        {
+          "uuid": "a1b2c3d4-0001-4000-8000-0000000000a1",
+          "body": "{\n  \"status\": \"accepted\",\n  \"notificationId\": \"{{faker 'string.uuid'}}\",\n  \"event\": \"{{body 'event'}}\",\n  \"receivedAt\": \"{{now}}\"\n}",
+          "latency": 0,
+          "statusCode": 202,
+          "label": "Notificación aceptada",
+          "headers": [{ "key": "Content-Type", "value": "application/json" }],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "a1b2c3d4-0002-4000-8000-000000000002",
+      "type": "http",
+      "documentation": "Healthcheck del mock usado por docker compose.",
+      "method": "get",
+      "endpoint": "health",
+      "responses": [
+        {
+          "uuid": "a1b2c3d4-0002-4000-8000-0000000000a2",
+          "body": "{ \"status\": \"ok\" }",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "OK",
+          "headers": [{ "key": "Content-Type", "value": "application/json" }],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    }
+  ],
+  "rootChildren": [
+    { "type": "route", "uuid": "a1b2c3d4-0001-4000-8000-000000000001" },
+    { "type": "route", "uuid": "a1b2c3d4-0002-4000-8000-000000000002" }
+  ],
+  "proxyMode": false,
+  "proxyHost": "",
+  "proxyRemovePrefix": false,
+  "tlsOptions": {
+    "enabled": false,
+    "type": "CERT",
+    "pfxPath": "",
+    "certPath": "",
+    "keyPath": "",
+    "caPath": "",
+    "passphrase": ""
+  },
+  "cors": true,
+  "headers": [{ "key": "Content-Type", "value": "application/json" }],
+  "proxyReqHeaders": [],
+  "proxyResHeaders": [],
+  "data": [],
+  "callbacks": []
+}

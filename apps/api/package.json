@@ -1,0 +1,47 @@
+{
+  "name": "@reservalab/api",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "API REST de ReservaLab (Express + Prisma)",
+  "scripts": {
+    "dev": "dotenv -e ../../.env -- tsx watch src/server.ts",
+    "build": "prisma generate && tsc --noEmit && tsup",
+    "typecheck": "tsc --noEmit",
+    "start": "node dist/server.js",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "db:generate": "prisma generate",
+    "db:migrate": "dotenv -e ../../.env -- prisma migrate deploy",
+    "db:migrate:dev": "dotenv -e ../../.env -- prisma migrate dev",
+    "db:seed": "dotenv -e ../../.env -- tsx prisma/seed.ts",
+    "db:reset": "dotenv -e ../../.env -- prisma migrate reset --force --skip-seed && pnpm db:seed"
+  },
+  "dependencies": {
+    "@prisma/client": "6.19.3",
+    "@reservalab/shared": "workspace:*",
+    "argon2": "^0.44.0",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "ioredis": "^5.6.0",
+    "jsonwebtoken": "^9.0.2",
+    "pino": "^9.7.0",
+    "pino-http": "^10.5.0",
+    "prisma": "6.19.3",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.3",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/node": "^22.15.0",
+    "@types/supertest": "^6.0.3",
+    "@vitest/coverage-v8": "^3.2.4",
+    "dotenv-cli": "^8.0.0",
+    "supertest": "^7.1.0",
+    "tsup": "^8.5.0",
+    "tsx": "^4.20.0",
+    "typescript": "5.9.3",
+    "vitest": "^3.2.4"
+  }
+}

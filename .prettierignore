@@ -1,0 +1,7 @@
+dist
+coverage
+node_modules
+.turbo
+pnpm-lock.yaml
+apps/api/prisma/migrations
+mocks

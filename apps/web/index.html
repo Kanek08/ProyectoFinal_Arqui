@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ReservaLab</title>
+    <style>
+      body {
+        font-family: system-ui, sans-serif;
+        max-width: 720px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+      }
+      form {
+        display: grid;
+        gap: 0.5rem;
+        max-width: 320px;
+      }
+      .error {
+        color: #b00020;
+      }
+      .ok {
+        color: #0a7a2f;
+      }
+      pre {
+        background: #f4f4f4;
+        padding: 0.75rem;
+        overflow: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>ReservaLab</h1>
+    <p>Estado de la API: <strong id="health">consultando...</strong></p>
+
+    <section id="login-section">
+      <h2>Inicio de sesión</h2>
+      <form id="login-form">
+        <label>Correo <input name="email" type="email" required value="docente@reservalab.edu" /></label>
+        <label>Contraseña <input name="password" type="password" required /></label>
+        <button type="submit">Entrar</button>
+        <p id="login-error" class="error" role="alert"></p>
+      </form>
+    </section>
+
+    <section id="session-section" hidden>
+      <h2>Sesión iniciada</h2>
+      <p id="session-user"></p>
+      <button id="logout">Cerrar sesión</button>
+      <h3>Espacios</h3>
+      <pre id="spaces"></pre>
+    </section>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
