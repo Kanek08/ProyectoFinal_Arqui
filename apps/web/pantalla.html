@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ReservaLab · Pantalla informativa</title>
+    <link rel="stylesheet" href="/src/styles.css" />
+  </head>
+  <body>
+    <main class="board">
+      <h1>Ocupación actual de espacios</h1>
+      <p class="hint">
+        Actualizado: <span id="updated">-</span> · se refresca cada 30 s · X-Cache: <span id="cache">-</span>
+      </p>
+      <p id="board-message" role="alert"></p>
+      <div id="buildings"></div>
+    </main>
+    <script type="module" src="/src/pantalla.ts"></script>
+  </body>
+</html>

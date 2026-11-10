@@ -1,0 +1,143 @@
+/* CSS mínimo propio (sin librerías de estilos). */
+:root {
+  --ok: #0a7a2f;
+  --error: #b00020;
+  --busy: #f4d6d6;
+  --free: #d8f0dc;
+  --line: #ddd;
+}
+
+body {
+  font-family: system-ui, sans-serif;
+  margin: 0;
+  color: #222;
+}
+
+main {
+  max-width: 960px;
+  margin: 1.5rem auto;
+  padding: 0 1rem;
+}
+
+.topbar {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.stack {
+  display: grid;
+  gap: 0.6rem;
+  max-width: 320px;
+}
+
+.row {
+  display: flex;
+  gap: 0.75rem;
+  align-items: end;
+  flex-wrap: wrap;
+}
+
+.between {
+  justify-content: space-between;
+  align-items: center;
+}
+
+.grow {
+  flex: 1;
+}
+
+label {
+  display: grid;
+  gap: 0.2rem;
+  font-size: 0.9rem;
+}
+
+input,
+select,
+button {
+  font: inherit;
+  padding: 0.4rem 0.6rem;
+}
+
+button {
+  cursor: pointer;
+}
+
+button.secondary {
+  background: none;
+  border: 1px solid var(--line);
+}
+
+.message.ok,
+.ok {
+  color: var(--ok);
+}
+
+.message.error,
+.error {
+  color: var(--error);
+}
+
+.hint {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.blocks {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: 0.5rem;
+}
+
+.blocks li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem;
+  border-radius: 4px;
+}
+
+.blocks li.FREE {
+  background: var(--free);
+}
+
+.blocks li.BUSY {
+  background: var(--busy);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  text-align: left;
+  padding: 0.4rem;
+  border-bottom: 1px solid var(--line);
+}
+
+tr.CANCELLED {
+  color: #888;
+}
+
+.board h2 {
+  margin-bottom: 0.25rem;
+}
+
+.badge {
+  font-weight: bold;
+}
+
+.badge.BUSY {
+  color: var(--error);
+}
+
+.badge.FREE {
+  color: var(--ok);
+}

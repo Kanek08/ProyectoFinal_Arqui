@@ -4,52 +4,80 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ReservaLab</title>
-    <style>
-      body {
-        font-family: system-ui, sans-serif;
-        max-width: 720px;
-        margin: 2rem auto;
-        padding: 0 1rem;
-      }
-      form {
-        display: grid;
-        gap: 0.5rem;
-        max-width: 320px;
-      }
-      .error {
-        color: #b00020;
-      }
-      .ok {
-        color: #0a7a2f;
-      }
-      pre {
-        background: #f4f4f4;
-        padding: 0.75rem;
-        overflow: auto;
-      }
-    </style>
+    <link rel="stylesheet" href="/src/styles.css" />
   </head>
   <body>
-    <h1>ReservaLab</h1>
-    <p>Estado de la API: <strong id="health">consultando...</strong></p>
+    <header class="topbar">
+      <strong>ReservaLab</strong>
+      <span>API: <span id="health">consultando...</span></span>
+      <a href="/pantalla.html" target="_blank" rel="noopener">Pantalla informativa</a>
+    </header>
 
-    <section id="login-section">
-      <h2>Inicio de sesión</h2>
-      <form id="login-form">
-        <label>Correo <input name="email" type="email" required value="docente@reservalab.edu" /></label>
-        <label>Contraseña <input name="password" type="password" required /></label>
-        <button type="submit">Entrar</button>
-        <p id="login-error" class="error" role="alert"></p>
-      </form>
-    </section>
+    <main>
+      <!-- Pantalla 1: inicio de sesión -->
+      <section id="login-view">
+        <h1>Inicio de sesión</h1>
+        <form id="login-form" class="stack">
+          <label>Correo <input name="email" type="email" required value="docente@reservalab.edu" /></label>
+          <label
+            >Contraseña <input name="password" type="password" required autocomplete="current-password"
+          /></label>
+          <button type="submit">Entrar</button>
+          <p id="login-message" role="alert"></p>
+        </form>
+        <p class="hint">Usuarios de prueba: admin@, docente@ y estudiante@reservalab.edu (Password123!).</p>
+      </section>
 
-    <section id="session-section" hidden>
-      <h2>Sesión iniciada</h2>
-      <p id="session-user"></p>
-      <button id="logout">Cerrar sesión</button>
-      <h3>Espacios</h3>
-      <pre id="spaces"></pre>
-    </section>
+      <!-- Pantalla 2: reservas -->
+      <section id="reservations-view" hidden>
+        <div class="row between">
+          <p id="session-user"></p>
+          <div class="row">
+            <button
+              id="expire-token"
+              type="button"
+              class="secondary"
+              title="Simula que venció el access token"
+            >
+              Simular token vencido
+            </button>
+            <button id="logout" type="button" class="secondary">Cerrar sesión</button>
+          </div>
+        </div>
+
+        <h1>Reservas</h1>
+        <form id="search-form" class="row">
+          <label
+            >Espacio
+            <select id="space-select" required></select
+          ></label>
+          <label>Fecha <input id="date-input" type="date" required /></label>
+          <label class="grow"
+            >Motivo <input id="purpose-input" type="text" maxlength="200" value="Clase"
+          /></label>
+          <button type="submit">Ver disponibilidad</button>
+        </form>
+        <p id="reserve-message" role="alert"></p>
+
+        <h2>Bloques del día</h2>
+        <p id="role-hint" class="hint" hidden>Los estudiantes solo consultan la disponibilidad.</p>
+        <ul id="blocks" class="blocks"></ul>
+
+        <h2>Mis reservas</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Espacio</th>
+              <th>Horario</th>
+              <th>Motivo</th>
+              <th>Estado</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="my-reservations"></tbody>
+        </table>
+      </section>
+    </main>
 
     <script type="module" src="/src/main.ts"></script>
   </body>
