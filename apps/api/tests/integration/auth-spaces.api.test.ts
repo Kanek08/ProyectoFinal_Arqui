@@ -2,7 +2,7 @@ import request from 'supertest';
 import { afterAll, beforeEach, describe, expect, it } from 'vitest';
 import { buildTestApp, createUser, loginAs, resetDatabase, testPrisma } from '../helpers';
 
-const { app, redis } = buildTestApp();
+const { app, redis, resetCache } = buildTestApp();
 
 afterAll(async () => {
   redis.disconnect();
@@ -11,6 +11,7 @@ afterAll(async () => {
 
 beforeEach(async () => {
   await resetDatabase();
+  await resetCache();
 });
 
 describe('Auth (RF-01 a RF-04) de punta a punta', () => {
