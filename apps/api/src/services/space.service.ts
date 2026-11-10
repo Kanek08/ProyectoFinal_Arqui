@@ -1,5 +1,7 @@
 import type { CreateSpaceInput, Space, SpaceQuery, UpdateSpaceInput } from '@reservalab/shared';
 import { ConflictError, NotFoundError, ValidationError } from '../errors';
+import { noopCacheInvalidator } from '../lib/cache';
+import type { CacheInvalidator } from '../lib/cache';
 import type { SpaceRepository } from '../repositories/space.repository';
 import type { SpaceRecord } from '../repositories/types';
 
@@ -13,7 +15,10 @@ export function toSpaceDto(space: SpaceRecord): Space {
 
 /** Reglas de negocio de espacios: nombre único por edificio, horario válido y borrado lógico. */
 export class SpaceService {
-  constructor(private readonly spaces: SpaceRepository) {}
+  constructor(
+    private readonly spaces: SpaceRepository,
+    private readonly cache: CacheInvalidator = noopCacheInvalidator,
+  ) {}
 
   async list(filters: SpaceQuery): Promise<Space[]> {
     const rows = await this.spaces.list(filters);
@@ -26,7 +31,9 @@ export class SpaceService {
 
   async create(input: CreateSpaceInput): Promise<Space> {
     await this.ensureNameAvailable(input.building, input.name);
-    return toSpaceDto(await this.spaces.create(input));
+    const created = await this.spaces.create(input);
+    await this.cache.spaceChanged(created.id);
+    return toSpaceDto(created);
   }
 
   async update(id: string, input: UpdateSpaceInput): Promise<Space> {
@@ -47,13 +54,16 @@ export class SpaceService {
       await this.ensureNameAvailable(building, name, id);
     }
 
-    return toSpaceDto(await this.spaces.update(id, input));
+    const updated = await this.spaces.update(id, input);
+    await this.cache.spaceChanged(id);
+    return toSpaceDto(updated);
   }
 
   /** Borrado lógico: el espacio deja de listarse pero conserva su historial de reservas. */
   async remove(id: string): Promise<void> {
     await this.findActiveOrThrow(id);
     await this.spaces.update(id, { active: false });
+    await this.cache.spaceChanged(id);
   }
 
   private async findActiveOrThrow(id: string): Promise<SpaceRecord> {
