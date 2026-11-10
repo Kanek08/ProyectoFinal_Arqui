@@ -5,6 +5,8 @@ declare global {
     interface Request {
       /** Usuario autenticado por requireAuth (JWT). */
       user?: { id: string; role: Role };
+      /** Sistema externo autenticado por requireApiKey (X-API-Key). */
+      apiKey?: { id: string; name: string; permissions: string[] };
     }
   }
 }
