@@ -5,33 +5,33 @@ export function todayInGuatemala(): string {
   return new Intl.DateTimeFormat('en-CA', { timeZone: TIMEZONE }).format(new Date());
 }
 
-const dateTime = new Intl.DateTimeFormat('es-GT', {
-  timeZone: TIMEZONE,
-  weekday: 'short',
-  day: '2-digit',
-  month: 'short',
-  hour: '2-digit',
-  minute: '2-digit',
-  hour12: false,
-});
-const timeOnly = new Intl.DateTimeFormat('es-GT', {
-  timeZone: TIMEZONE,
-  hour: '2-digit',
-  minute: '2-digit',
-  hour12: false,
-});
+const fmt = (options: Intl.DateTimeFormatOptions) =>
+  new Intl.DateTimeFormat('es-GT', { timeZone: TIMEZONE, hour12: false, ...options });
 
-/** "lun, 10 nov, 08:00 a 10:00" en hora de Guatemala. */
-export function formatRange(startIso: string, endIso: string): string {
-  return `${dateTime.format(new Date(startIso))} a ${timeOnly.format(new Date(endIso))}`;
+const timeOnly = fmt({ hour: '2-digit', minute: '2-digit' });
+const dayNumber = fmt({ day: 'numeric' });
+const monthShort = fmt({ month: 'short' });
+const weekdayLong = fmt({ weekday: 'long', day: 'numeric', month: 'long' });
+const clock = fmt({ hour: '2-digit', minute: '2-digit', second: '2-digit' });
+const clockShort = fmt({ hour: '2-digit', minute: '2-digit' });
+
+/** "08:00 – 10:00" en hora de Guatemala. */
+export function formatTimeRange(startIso: string, endIso: string): string {
+  return `${timeOnly.format(new Date(startIso))} – ${timeOnly.format(new Date(endIso))}`;
 }
 
-export function formatClock(date: Date): string {
-  return new Intl.DateTimeFormat('es-GT', {
-    timeZone: TIMEZONE,
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-    hour12: false,
-  }).format(date);
+/** Día y mes cortos para la insignia de fecha: { day: "10", month: "nov" }. */
+export function dateParts(iso: string): { day: string; month: string } {
+  const d = new Date(iso);
+  return { day: dayNumber.format(d), month: monthShort.format(d).replace('.', '') };
+}
+
+/** "martes, 10 de noviembre". */
+export function formatLongDate(date: Date | string): string {
+  const text = weekdayLong.format(typeof date === 'string' ? new Date(`${date}T12:00:00-06:00`) : date);
+  return text.charAt(0).toUpperCase() + text.slice(1);
+}
+
+export function formatClock(date: Date, withSeconds = true): string {
+  return (withSeconds ? clock : clockShort).format(date);
 }

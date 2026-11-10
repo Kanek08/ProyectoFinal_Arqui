@@ -10,7 +10,7 @@ export function $<T extends HTMLElement = HTMLElement>(id: string): T {
 export function el<K extends keyof HTMLElementTagNameMap>(
   tag: K,
   props: { text?: string; className?: string; attrs?: Record<string, string> } = {},
-  children: (HTMLElement | string)[] = [],
+  children: (Node | string)[] = [],
 ): HTMLElementTagNameMap[K] {
   const node = document.createElement(tag);
   if (props.text !== undefined) node.textContent = props.text;
@@ -20,7 +20,22 @@ export function el<K extends keyof HTMLElementTagNameMap>(
   return node;
 }
 
-export function showMessage(target: HTMLElement, text: string, kind: 'ok' | 'error' | 'info' = 'info') {
+export type MessageKind = 'ok' | 'error' | 'info';
+
+/** Muestra un aviso en línea; con texto vacío el aviso se oculta (.alert:empty). */
+export function showMessage(target: HTMLElement, text: string, kind: MessageKind = 'info') {
   target.textContent = text;
-  target.className = `message ${kind}`;
+  target.className = `alert ${kind}`;
+}
+
+let toastTimer: ReturnType<typeof setTimeout> | undefined;
+
+/** Aviso flotante que desaparece solo. */
+export function toast(text: string, kind: MessageKind = 'ok', ms = 4000) {
+  const node = $('toast');
+  showMessage(node, text, kind);
+  node.classList.add('toast');
+  node.hidden = false;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => (node.hidden = true), ms);
 }

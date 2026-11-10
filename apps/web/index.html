@@ -3,81 +3,164 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ReservaLab</title>
+    <meta name="color-scheme" content="light dark" />
+    <title>ReservaLab · Reservas de laboratorios y salones</title>
     <link rel="stylesheet" href="/src/styles.css" />
   </head>
   <body>
     <header class="topbar">
-      <strong>ReservaLab</strong>
-      <span>API: <span id="health">consultando...</span></span>
-      <a href="/pantalla.html" target="_blank" rel="noopener">Pantalla informativa</a>
+      <a class="brand" href="/">
+        <span class="brand-mark" aria-hidden="true">
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.2"
+          >
+            <rect x="3" y="4" width="18" height="17" rx="3" />
+            <path d="M3 9h18M8 2v4M16 2v4M8 14h3" />
+          </svg>
+        </span>
+        ReservaLab
+      </a>
+      <span id="health" class="status-pill" title="Estado de la API">Conectando…</span>
+      <span class="spacer"></span>
+      <a class="btn btn-ghost btn-sm" href="/pantalla.html" target="_blank" rel="noopener"
+        >Pantalla informativa</a
+      >
+      <div id="user-chip" class="user-chip" hidden>
+        <span id="user-avatar" class="avatar" aria-hidden="true"></span>
+        <span class="user-meta">
+          <strong id="user-name"></strong>
+          <small id="user-role"></small>
+        </span>
+        <button id="logout" type="button" class="btn btn-ghost btn-sm">Salir</button>
+      </div>
     </header>
 
-    <main>
-      <!-- Pantalla 1: inicio de sesión -->
-      <section id="login-view">
-        <h1>Inicio de sesión</h1>
-        <form id="login-form" class="stack">
-          <label>Correo <input name="email" type="email" required value="docente@reservalab.edu" /></label>
-          <label
-            >Contraseña <input name="password" type="password" required autocomplete="current-password"
-          /></label>
-          <button type="submit">Entrar</button>
-          <p id="login-message" role="alert"></p>
-        </form>
-        <p class="hint">Usuarios de prueba: admin@, docente@ y estudiante@reservalab.edu (Password123!).</p>
-      </section>
-
-      <!-- Pantalla 2: reservas -->
-      <section id="reservations-view" hidden>
-        <div class="row between">
-          <p id="session-user"></p>
-          <div class="row">
-            <button
-              id="expire-token"
-              type="button"
-              class="secondary"
-              title="Simula que venció el access token"
-            >
-              Simular token vencido
-            </button>
-            <button id="logout" type="button" class="secondary">Cerrar sesión</button>
+    <!-- Pantalla 1: inicio de sesión -->
+    <main id="login-view" class="auth">
+      <section class="card auth-card" aria-labelledby="login-title">
+        <form id="login-form" class="card-body" novalidate>
+          <header>
+            <h1 id="login-title">Inicia sesión</h1>
+            <p>Reserva laboratorios y salones de la Facultad de Ingeniería.</p>
+          </header>
+          <label class="field">
+            Correo institucional
+            <input
+              name="email"
+              type="email"
+              required
+              autocomplete="username"
+              placeholder="nombre@reservalab.edu"
+            />
+          </label>
+          <label class="field">
+            Contraseña
+            <input
+              name="password"
+              type="password"
+              required
+              autocomplete="current-password"
+              placeholder="••••••••"
+            />
+          </label>
+          <p id="login-message" class="alert" role="alert"></p>
+          <button id="login-submit" type="submit" class="btn btn-block">Entrar</button>
+          <div class="demo-users">
+            <p>Usuarios de prueba (contraseña Password123!):</p>
+            <div class="chips">
+              <button type="button" class="chip" data-email="docente@reservalab.edu">Docente</button>
+              <button type="button" class="chip" data-email="admin@reservalab.edu">Administrador</button>
+              <button type="button" class="chip" data-email="estudiante@reservalab.edu">Estudiante</button>
+            </div>
           </div>
-        </div>
-
-        <h1>Reservas</h1>
-        <form id="search-form" class="row">
-          <label
-            >Espacio
-            <select id="space-select" required></select
-          ></label>
-          <label>Fecha <input id="date-input" type="date" required /></label>
-          <label class="grow"
-            >Motivo <input id="purpose-input" type="text" maxlength="200" value="Clase"
-          /></label>
-          <button type="submit">Ver disponibilidad</button>
         </form>
-        <p id="reserve-message" role="alert"></p>
-
-        <h2>Bloques del día</h2>
-        <p id="role-hint" class="hint" hidden>Los estudiantes solo consultan la disponibilidad.</p>
-        <ul id="blocks" class="blocks"></ul>
-
-        <h2>Mis reservas</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>Espacio</th>
-              <th>Horario</th>
-              <th>Motivo</th>
-              <th>Estado</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody id="my-reservations"></tbody>
-        </table>
       </section>
     </main>
+
+    <!-- Pantalla 2: reservas -->
+    <main id="reservations-view" class="container" hidden>
+      <div class="page-head">
+        <div>
+          <h1>Reservas</h1>
+          <p>Elige un espacio y una fecha; toca un bloque libre para reservarlo.</p>
+        </div>
+        <button
+          id="expire-token"
+          type="button"
+          class="btn btn-ghost btn-sm"
+          title="Invalida el access token en memoria para demostrar la renovación automática"
+        >
+          Probar renovación de token
+        </button>
+      </div>
+
+      <div class="layout">
+        <section class="card" aria-labelledby="availability-title">
+          <div class="card-body">
+            <form id="search-form" class="filters">
+              <label class="field">
+                Espacio
+                <select id="space-select" required></select>
+              </label>
+              <label class="field">
+                Fecha
+                <input id="date-input" type="date" required />
+              </label>
+              <label class="field">
+                Motivo de la reserva
+                <input
+                  id="purpose-input"
+                  type="text"
+                  maxlength="200"
+                  value="Clase"
+                  placeholder="Ej. Laboratorio de Redes"
+                />
+              </label>
+            </form>
+          </div>
+          <div class="card-head">
+            <div>
+              <h2 id="availability-title">Disponibilidad</h2>
+              <p id="space-summary">Selecciona un espacio.</p>
+            </div>
+            <div class="legend" aria-hidden="true">
+              <span><i class="free"></i>Libre</span>
+              <span><i class="busy"></i>Ocupado</span>
+              <span><i class="past"></i>Pasado</span>
+            </div>
+          </div>
+          <div class="card-body">
+            <p id="role-hint" class="alert info" hidden>
+              Como estudiante puedes consultar la disponibilidad; las reservas las hacen docentes y
+              administradores.
+            </p>
+            <ul id="blocks" class="slots" aria-live="polite"></ul>
+          </div>
+        </section>
+
+        <aside class="card" aria-labelledby="mine-title">
+          <div class="card-head">
+            <h2 id="mine-title">Mis reservas</h2>
+            <div class="tabs" role="tablist">
+              <button type="button" class="tab" role="tab" data-filter="upcoming" aria-selected="true">
+                Próximas
+              </button>
+              <button type="button" class="tab" role="tab" data-filter="history" aria-selected="false">
+                Historial
+              </button>
+            </div>
+          </div>
+          <ul id="my-reservations" class="res-list" aria-live="polite"></ul>
+        </aside>
+      </div>
+    </main>
+
+    <p id="toast" class="alert toast" role="status" hidden></p>
 
     <script type="module" src="/src/main.ts"></script>
   </body>
