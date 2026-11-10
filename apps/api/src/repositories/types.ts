@@ -1,4 +1,4 @@
-import type { Role } from '@reservalab/shared';
+import type { ReservationStatus, Role } from '@reservalab/shared';
 
 /**
  * Registros de dominio que devuelven los repositorios. Los servicios dependen
@@ -33,4 +33,32 @@ export interface SpaceRecord {
   active: boolean;
   createdAt: Date;
   updatedAt: Date;
+}
+
+export interface ReservationRecord {
+  id: string;
+  spaceId: string;
+  userId: string;
+  startAt: Date;
+  endAt: Date;
+  purpose: string;
+  status: ReservationStatus;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+/** Reserva con los datos mínimos del espacio, para listados y notificaciones. */
+export interface ReservationWithSpace extends ReservationRecord {
+  space: { name: string; building: string };
+}
+
+export interface ApiKeyRecord {
+  id: string;
+  name: string;
+  prefix: string;
+  keyHash: string;
+  permissions: string[];
+  lastUsedAt: Date | null;
+  revokedAt: Date | null;
+  createdAt: Date;
 }

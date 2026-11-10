@@ -3,7 +3,7 @@
  * por eso es seguro correrlo en cada arranque del contenedor.
  */
 import { PrismaClient } from '@prisma/client';
-import { generateApiKey } from '../src/lib/crypto';
+import { describeApiKey, generateApiKey, isApiKeyFormat } from '../src/lib/crypto';
 import { argon2Hasher } from '../src/lib/password';
 
 const prisma = new PrismaClient();
@@ -103,20 +103,27 @@ async function main() {
     ],
   });
 
-  const apiKey = generateApiKey();
+  // Si .env define DISPLAY_API_KEY se registra esa key (la misma que la web recibe como
+  // VITE_DISPLAY_API_KEY), así la pantalla funciona con un solo docker compose up.
+  // Si no, se genera una aleatoria. En ambos casos solo se guarda el hash.
+  const fromEnv = process.env.DISPLAY_API_KEY?.trim();
+  if (fromEnv && !isApiKeyFormat(fromEnv)) {
+    throw new Error('DISPLAY_API_KEY debe tener el formato rl_live_ + 32 caracteres [A-Za-z0-9_-]');
+  }
+  const apiKey = fromEnv ? describeApiKey(fromEnv) : generateApiKey();
   await prisma.apiKey.create({
     data: {
       name: 'Pantalla informativa (demo)',
       prefix: apiKey.prefix,
       keyHash: apiKey.hash,
-      permissions: ['read:now', 'read:spaces'],
+      permissions: ['read:now', 'read:spaces', 'read:availability'],
     },
   });
 
   console.log('[seed] Usuarios: admin@, docente@, estudiante@reservalab.edu  contraseña: ' + SEED_PASSWORD);
   console.log(`[seed] ${spaces.length} espacios y 5 reservas creadas.`);
   console.log('[seed] ================================================================');
-  console.log('[seed] API key de demo (read:now, read:spaces). Se muestra SOLO esta vez:');
+  console.log('[seed] API key de la pantalla (read:now, read:spaces, read:availability):');
   console.log(`[seed]   ${apiKey.key}`);
   console.log('[seed] ================================================================');
 }

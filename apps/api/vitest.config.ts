@@ -33,6 +33,8 @@ export default defineConfig({
       reporter: ['text', 'html', 'json-summary'],
       include: ['src/**/*.ts'],
       exclude: ['src/server.ts', 'src/types/**'],
+      // La rúbrica pide 70 % o más: test:coverage falla si se baja de ahí.
+      thresholds: { lines: 70, statements: 70, functions: 70, branches: 70 },
     },
   },
 });

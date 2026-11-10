@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ReservaLab · Pantalla informativa</title>
+    <link rel="stylesheet" href="/src/styles.css" />
+  </head>
+  <body class="kiosk">
+    <header class="kiosk-head">
+      <div>
+        <h1>Ocupación de espacios</h1>
+        <p>Facultad de Ingeniería · ReservaLab</p>
+      </div>
+      <div class="clock" aria-live="off">
+        <strong id="clock">--:--</strong>
+        <span id="today"></span>
+      </div>
+    </header>
+
+    <main class="kiosk-main">
+      <p id="board-message" class="alert" role="alert"></p>
+      <section class="summary" aria-label="Resumen">
+        <div class="stat"><span>Espacios</span><strong id="stat-total">–</strong></div>
+        <div class="stat free"><span>Disponibles ahora</span><strong id="stat-free">–</strong></div>
+        <div class="stat busy"><span>Ocupados ahora</span><strong id="stat-busy">–</strong></div>
+      </section>
+      <div id="buildings" class="building-list"></div>
+    </main>
+
+    <footer class="kiosk-foot">
+      <span>Actualizado a las <b id="updated">–</b></span>
+      <span>Próxima actualización en <b id="countdown">30</b> s · X-Cache: <b id="cache">–</b></span>
+    </footer>
+    <div id="progress" class="progress" style="width: 0"></div>
+
+    <script type="module" src="/src/pantalla.ts"></script>
+  </body>
+</html>

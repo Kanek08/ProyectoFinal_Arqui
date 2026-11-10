@@ -22,8 +22,8 @@ export class BadRequestError extends AppError {
 }
 
 export class ValidationError extends AppError {
-  constructor(message = 'Los datos enviados no son válidos', details?: unknown) {
-    super(422, 'VALIDATION_ERROR', message, details);
+  constructor(message = 'Los datos enviados no son válidos', details?: unknown, code = 'VALIDATION_ERROR') {
+    super(422, code, message, details);
   }
 }
 
